@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %} Tenant | Signin {% endblock %}
+
+{% block content %}
+
+<div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="mb-4">Sign Into Tenant</h5>
+                    <form action = "" method = "post">
+                        {% csrf_token %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="feather icon-home"></i></span>
+                            </div>
+                            <input name = "tenant_name"   type="text" class="form-control" placeholder="{{ form.tenant_name.label }}">
+                        </div>
+                        {% for error in form.tenant_name.errors %}
+                                    <div style = "color: orange"><strong>{{ error }}</strong></div>
+                        {% endfor %}
+                        
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="feather icon-lock"></i></span>
+                            </div>
+                            <input name = "password"  type="password" class="form-control" placeholder="{{ form.password.label }}">
+                        </div>
+                        {% for error in form.password.errors %}
+                                <div style = "color: orange"><strong>{{ error }}</strong></div>
+                        {% endfor %}
+                        <div>
+                            {% for error in errors %}
+                                <div style = "color: orange"><strong>{{error}}</strong></div>
+                            {% endfor %}
+
+                        </div>
+                        <button  class="btn btn-primary mb-4 shadow-2">Login</button>
+                        <p class="mb-0 text-muted">Don’t have a tenant? <a href="/signup">Get Tenant</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
