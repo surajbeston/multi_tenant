@@ -35,24 +35,28 @@ def signup(request):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                denied_chars = punctuation[:-6] + punctuation[-5:]
-                has_denied_char = False
-                for character in data["tenant_name"]:
-                    if character in denied_chars:
-                        has_denied_char = True
-                        break
-                if not has_denied_char:
-                    user = User.objects.create_user(data["tenant_name"], data["email"], data["password"])
-                    user.save()
-                    additional = Additional(user = user) 
-                    additional.save()
-                    redirect_url = create_tenant(data["tenant_name"], data["email"], data["password"])
-                    send_signup_email(data["email"], data["tenant_name"])
-                    return redirect(redirect_url)
-                else:
-                    errors.append(f"Only alphabet, numbers and _ allowed in tenant name.")
-            except IntegrityError:
-                errors.append("Tenant name already used.")
+                user = User.objects.get(email = data["email"])
+                errors.append("Email already used.")
+            except User.DoesNotExist:
+                try:
+                    denied_chars = punctuation[:-6] + punctuation[-5:]
+                    has_denied_char = False
+                    for character in data["tenant_name"]:
+                        if character in denied_chars:
+                            has_denied_char = True
+                            break
+                    if not has_denied_char:
+                        user = User.objects.create_user(data["tenant_name"], data["email"], data["password"])
+                        user.save()
+                        additional = Additional(user = user) 
+                        additional.save()
+                        redirect_url = create_tenant(data["tenant_name"], data["email"], data["password"])
+                        send_signup_email(data["email"], data["password"], data["tenant_name"])
+                        return render(request, "home_app/signup.html", {"form": form, "message": "Successfully signed up! Login details has been sent to your email." })
+                    else:
+                        errors.append(f"Only alphabet, numbers and _ allowed in tenant name.")
+                except IntegrityError:
+                    errors.append("Tenant name already used.")
     return render(request, "home_app/signup.html", {"form": form, "errors": errors})
 
 def logout_view(request):

@@ -6,6 +6,9 @@
 
 <div class="auth-wrapper">
         <div class="auth-content">
+            {% if message %}
+                <p style = "color: green; font-weight: bolder;">{{ message }} </p>
+            {% endif %}
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="mb-4">Sign Up Tenant</h5>

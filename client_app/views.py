@@ -47,11 +47,12 @@ def subscribe(request):
                     subs_items.append({"price": price, "item": item})
                 context = {"items": subs_items}
             else:
-                basepackage_price = Price.objects.get(nickname = "basepackage")
+                
+                basepackage_price = Price.objects.get(product__name = "basepackage")
 
-                email_price = Price.objects.get(nickname = "email")
+                email_price = Price.objects.get(product__name = "email")
 
-                task_price = Price.objects.get(nickname = "task")
+                task_price = Price.objects.get(product__name = "task")
 
                 context =  {"prices": {"basepackage_price": basepackage_price, "email_price": email_price, "task_price": task_price}}
 
@@ -69,12 +70,16 @@ def signin(request):
             form = SignInForm(data = request.POST)
             if form.is_valid():
                 data = form.cleaned_data
-                user = authenticate(username = data["tenant_name"], password = data["password"])
-                if user:
-                    login(request, user)
-                    return redirect(f"/{request.tenant.schema_name}/")
-                else:
-                    errors.append("Tenant name or password is invalid.")
+                try:
+                    email_user = User.objects.get(email = data["email"])
+                    user = authenticate(username = email_user.username, password = data["password"])
+                    if user:
+                        login(request, user)
+                        return redirect(f"/{request.tenant.schema_name}/")
+                    else:
+                        errors.append("Email or password is invalid.")
+                except User.DoesNotExist:
+                    errors.append("Email or password incorrect.")
         return render(request, "client_app/signin.html", {"form": form, "errors": errors})
     return redirect(f"/{request.tenant.schema_name}/")
 

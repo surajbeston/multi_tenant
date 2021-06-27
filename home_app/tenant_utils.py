@@ -27,11 +27,11 @@ def create_tenant_user(tenant_name, email, password):
 
     return f"/{tenant_name}/login/"
 
-def send_signup_email(email, tenant_name):
+def send_signup_email(email, password, tenant_name):
     url = f"{settings.HOSTNAME}/{tenant_name}/login"
     send_mail(
         subject = 'Tenant successfully created.',
-        message = f'Your tenant has been successfully created. Please login here with required credentials: {url}  ',
+        message = f'Your tenant has been successfully created. Please login to following link with, Email: {email} Password: {password},  {url}  ',
         from_email = 'getsurajjha@gmail.com',
         recipient_list = [email],
         fail_silently=True,

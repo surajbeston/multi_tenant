@@ -4,6 +4,7 @@
 
 {% block content %}
 
+
 <div class="auth-wrapper">
         <div class="auth-content">
             <div class="card">
@@ -13,9 +14,9 @@
                         {% csrf_token %}
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="feather icon-home"></i></span>
+                                <span class="input-group-text"><i class="feather icon-mail"></i></span>
                             </div>
-                            <input name = "tenant_name"   type="text" class="form-control" placeholder="{{ form.tenant_name.label }}">
+                            <input name = "email"   type="text" class="form-control" placeholder="{{ form.email.label }}">
                         </div>
                         {% for error in form.tenant_name.errors %}
                                     <div style = "color: orange"><strong>{{ error }}</strong></div>
