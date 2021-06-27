@@ -27,10 +27,6 @@ from pprint import pprint
 def home(request):
     return HttpResponse(f"Tenant: {request.tenant.schema_name}")
 
-def home(request):
-    return HttpResponse(f"Tenant: {request.tenant.schema_name}")
-
-
 def signup(request):
     form = SignUpForm()
     errors = []

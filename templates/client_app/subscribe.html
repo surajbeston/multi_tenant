@@ -185,7 +185,6 @@ function add_task(evnt){
 function button_changer(evnt){
     var current_text = evnt.target.innerText
     if (evnt.target.innerText == "Add"){
-        console.log("reached here")
         evnt.target.classList.remove("btn-primary")
         evnt.target.classList.add("btn-danger")
         evnt.target.innerText = "Remove"
@@ -199,11 +198,9 @@ function button_changer(evnt){
 }
 
 function remove_item(package_name){
-    console.log(items)
     for (var index in items){
             if (items[index].package == package_name){
                 item = items.splice(index, index+1)
-                console.log(items)
             }
         }
 }
@@ -239,7 +236,6 @@ function update_quantity(){
     var item_length = document.getElementsByClassName("col-4").length
     for (var i = 1; i<= item_length; i++){
         var quantity = document.getElementById("item-quantity-original-"+i).innerText
-        console.log(quantity)
         document.getElementById("item-quantity-" + i).value = quantity
     }
 }
@@ -267,7 +263,6 @@ function update_item(item_number){
 
 function cancel_subscription(){
     var subscription_id  =document.getElementById("subscription-id").innerText
-    console.log(subscription_id)
     fetch("/cancel-subscription/", {
         method: 'POST',
         headers: {
