@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %} {{ user }} {% endblock %}
+
+{% block script %} 
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %} 
+
+{% if prices %}
+    <div class = "row m-5">
+        <div class = "col-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <p hidden  id = "basepackage-price-id">{{ prices.basepackage_price.id }}</p>
+                    <h5 class="card-title">{{ prices.basepackage_price.product.name }}</h5>
+                    <p class="card-text"></p>
+                    <p class="card-text">&euro;20.00 EUR/month for first user then <br> &euro;5.00 EUR/month </p>
+                    <div>
+                    <select class="form-select form-select-lg mb-3" id = "basepackage-quantity">
+                        <option value="1" selected>One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                    </select>
+                    </div>
+                    <button id = "basepackage-add" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class = "col-4">
+            <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <p hidden  id = "email-price-id">{{ prices.email_price.id }}</p>
+                <h5 class="card-title">{{ prices.email_price.product.name }} (Optional)</h5>
+                <p class="card-text"></p>
+                {% for plan in prices.email_price.product.plan_set.all %}
+                    <p class="card-text">{{ plan.human_readable_price  }}</p>
+                {% endfor %}
+                <div>
+                    <select class="form-select form-select-lg mb-3" id = "email-quantity">
+                        <option value="1" selected>One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                    </select>
+                </div>
+                <button id = "email-add" class="btn btn-primary">Add</button>
+            </div>
+            </div>
+        </div>
+
+        <div class = "col-4">
+            <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <p hidden  id = "task-price-id">{{ prices.task_price.id }}</p>
+                <h5 class="card-title">{{ prices.task_price.product.name }} (Optional)</h5>
+                <p class="card-text"></p>
+                {% for plan in prices.task_price.product.plan_set.all %}
+                    <p class="card-text">{{ plan.human_readable_price  }}</p>
+                {% endfor %}
+                <div>
+                    <select class="form-select form-select-lg mb-3" id = "task-quantity">
+                        <option value="1" selected>One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                    </select>
+                </div>
+                <button id = "task-add" class="btn btn-primary">Add</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div style = "display: flex; justify-content: center;">
+        <button id = "final-pay" class = "btn btn-lg btn-primary">Subscribe</button>
+    </div>
+{% else %}
+    <div class = "row m-5">
+        <p hidden id = "subscription-id">{{ items.1.item.subscription.id }}</p>
+        {% for item in items %}
+            <div class = "col-4">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <p hidden id = "item-id-{{ forloop.counter }}" >{{ item.item.id }}</p>
+                        <p hidden id = "item-quantity-original-{{ forloop.counter }}" >{{ item.item.quantity }}</p>
+                        <h5 class="card-title">{{ item.price.product.name }}</h5>
+                        <p class="card-text"></p>
+                        {% comment %} <p class="card-text">&euro;20.00 EUR/month for first user then <br> &euro;5.00 EUR/month </p> {% endcomment %}
+                        <div>
+                        <select class="form-select form-select-lg mb-3" id = "item-quantity-{{ forloop.counter }}">
+                            <option value="1" selected>One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                            <option value="4">Four</option>
+                            <option value="5">Five</option>
+                        </select>
+                        </div>
+                        <button onclick = "update_item({{ forloop.counter }})" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div style = "display: flex; justify-content: center;">
+        <button id = "cancel-subscription" class = "btn btn-lg btn-danger">Cancel Subscription</button>
+    </div>
+{% endif %}
+
+
+
+
+
+
+<script>
+
+stripe = Stripe('pk_test_51J5GaNBqbJO97QQgMHpgpzRfAhlqUIo0FPs3rZGlHZBPArVA0DxdIDwIzRLKnqxs9xWkrSVMljUZaO2Tr0TFf7Pp00HnB0xSpR');
+
+
+{% if prices %}
+
+document.getElementById("final-pay").disabled = true;
+document.getElementById("email-add").disabled = true;
+document.getElementById("task-add").disabled = true;
+
+document.getElementById("basepackage-add").addEventListener("click", add_basepackage)
+document.getElementById("email-add").addEventListener("click", add_email)
+document.getElementById("task-add").addEventListener("click", add_task)
+
+
+
+var items = []
+
+function add_basepackage(evnt){
+    var current_text = button_changer(evnt)
+    if (current_text == "Add"){
+        document.getElementById("final-pay").disabled = false;
+        document.getElementById("email-add").disabled = false;
+        document.getElementById("task-add").disabled = false;
+
+        var basepackage_price_id = document.getElementById("basepackage-price-id").innerText
+        var quantity = document.getElementById("basepackage-quantity").value
+        items.push({"package" : "basepackage", "price_id": basepackage_price_id, "quantity": quantity})
+    } 
+    else{
+        document.getElementById("final-pay").disabled = true;
+        document.getElementById("email-add").disabled = true;
+        document.getElementById("task-add").disabled = true;
+
+        remove_item("basepackage")
+    }
+}
+
+function add_email(evnt){
+    var current_text = button_changer(evnt)
+    if (current_text == "Add"){
+        var email_price_id = document.getElementById("email-price-id").innerText
+        var quantity = document.getElementById("email-quantity").value
+        items.push({"package" : "email", "price_id": email_price_id, "quantity": quantity})
+    }
+    else{
+        remove_item("email")
+    }
+}
+
+function add_task(evnt){
+    var current_text =  button_changer(evnt)
+    if (current_text == "Add"){
+        var task_price_id = document.getElementById("task-price-id").innerText
+        var quantity = document.getElementById("task-quantity").value
+
+        items.push({"package" : "task", "price_id": task_price_id, "quantity": quantity})
+    }
+    else{
+        remove_item("task")
+    }
+}
+
+
+function button_changer(evnt){
+    var current_text = evnt.target.innerText
+    if (evnt.target.innerText == "Add"){
+        console.log("reached here")
+        evnt.target.classList.remove("btn-primary")
+        evnt.target.classList.add("btn-danger")
+        evnt.target.innerText = "Remove"
+    }
+    else{
+        evnt.target.classList.add("btn-primary")
+        evnt.target.classList.remove("btn-danger")
+        evnt.target.innerText = "Add"
+    }
+    return current_text
+}
+
+function remove_item(package_name){
+    console.log(items)
+    for (var index in items){
+            if (items[index].package == package_name){
+                item = items.splice(index, index+1)
+                console.log(items)
+            }
+        }
+}
+
+var final_pay_btn = document.getElementById("final-pay")
+final_pay_btn.addEventListener("click", submit_for_id)
+
+function submit_for_id(){
+    fetch("/create-checkout-session/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken':'{{ csrf_token }}',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({"items" : items, "email": "{{ user.email }}", "client": "{{ tenant_name }}"})
+    })
+    .then((response) =>{
+        return response.json()
+    })
+    .then((session) => {
+        return stripe.redirectToCheckout({sessionId: session.id})
+    })
+}
+
+{% else %}
+
+update_quantity()
+
+document.getElementById("cancel-subscription").addEventListener("click", cancel_subscription)
+
+function update_quantity(){
+    var item_length = document.getElementsByClassName("col-4").length
+    for (var i = 1; i<= item_length; i++){
+        var quantity = document.getElementById("item-quantity-original-"+i).innerText
+        console.log(quantity)
+        document.getElementById("item-quantity-" + i).value = quantity
+    }
+}
+
+
+function update_item(item_number){
+    var item_id = document.getElementById("item-id-"+item_number).innerText
+    var quantity = document.getElementById("item-quantity-" + item_number).value
+    
+    fetch("/update-subscription-item/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken':'{{ csrf_token }}',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({"item_id": item_id, "quantity": quantity})
+    })
+    .then((response) =>{
+        if (response.status == 200){
+            window.location.reload(true)
+        }
+    })
+}
+
+function cancel_subscription(){
+    var subscription_id  =document.getElementById("subscription-id").innerText
+    console.log(subscription_id)
+    fetch("/cancel-subscription/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken':'{{ csrf_token }}',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({"subscription_id": subscription_id})
+    })
+    .then((response) =>{
+        if (response.status == 200){
+            window.location.reload(true)
+        }
+    })
+}
+
+{% endif %}
+
+</script>
+
+
+{% endblock %}

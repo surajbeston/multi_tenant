@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
-#Heroku changes
-import dj_database_url
 
 
 
@@ -38,7 +36,6 @@ ALLOWED_HOSTS = ["*"]
 MIDDLEWARE = [
     "django_pgschemas.middleware.TenantMiddleware",
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,7 +71,7 @@ WSGI_APPLICATION = 'multi_tenant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django_pgschemas.postgresql_backend',
-        'NAME': 'multi_tenant',
+        'NAME': 'multi_tenant1',
         'HOST': 'localhost',
         'PORT': '5432',
         'USER': 'postgres',
@@ -89,11 +86,9 @@ DATABASE_ROUTERS = (
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
-#heroku changes
 TENANTS = {
     "public": {
         "APPS": [
-            'whitenoise.runserver_nostatic',
             'django.contrib.admin',
             'django.contrib.auth',
             'django.contrib.contenttypes',
@@ -103,15 +98,13 @@ TENANTS = {
 
             "django_pgschemas",
             "public_app",
-            # ...
         ],
     },
     "main": {
         "APPS": [
-            'django.contrib.admin',
-            'django.contrib.auth',
-            'django.contrib.sessions',
-            "home_app"
+            "home_app",
+            "djstripe"
+
         ],
         "DOMAINS": [],
         "FALLBACK_DOMAINS": ["localhost"],
@@ -124,9 +117,9 @@ TENANTS = {
             'django.contrib.admin',
             'django.contrib.auth',
             'django.contrib.sessions',
-            "school",
+            "client_app",
         ],
-        "URLCONF": "school.urls",
+        "URLCONF": "client_app.urls",
     }
 }
 
@@ -189,9 +182,14 @@ STATIC_ROOT = 'static'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "staticfiles")]
 
-#heroku changes
+# AUTH_USER_MODEL = 'public_app.User'
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
 
-WHITENOISE_USE_FINDERS = True
+#STRIPE CONFIGS
+
+STRIPE_TEST_PUBLIC_KEY = "pk_test_51J5GaNBqbJO97QQgMHpgpzRfAhlqUIo0FPs3rZGlHZBPArVA0DxdIDwIzRLKnqxs9xWkrSVMljUZaO2Tr0TFf7Pp00HnB0xSpR"
+STRIPE_TEST_SECRET_KEY = "sk_test_51J5GaNBqbJO97QQg6bKgGeSOf3QRAFesfK5d4yf9K51tahX1KJOUE4MWW4M1zBgOb9G7iGpQUEy8IehyknxXBvnd00ZM2f9c1N"
+STRIPE_LIVE_MODE = False
+DJSTRIPE_WEBHOOK_SECRET = "whsec_eWy198FZlzS9CcMotj477dwah0b27cU2"
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+DJSTRIPE_USE_NATIVE_JSONFIELD = True

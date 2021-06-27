@@ -24,15 +24,14 @@ def create_tenant_user(tenant_name, email, password):
         user = User.objects.create(username = tenant_name, email = email, is_staff = True, is_superuser = True)
         user.set_password(password)
         user.save()
-        print (user)
 
     return f"/{tenant_name}/login/"
 
 def send_signup_email(email, tenant_name):
     url = f"{settings.HOSTNAME}/{tenant_name}/login"
     send_mail(
-        subject = 'Package successfully created.',
-        message = f'Your package has been successfully created. Please login here with required credentials: {url}  ',
+        subject = 'Tenant successfully created.',
+        message = f'Your tenant has been successfully created. Please login here with required credentials: {url}  ',
         from_email = 'getsurajjha@gmail.com',
         recipient_list = [email],
         fail_silently=True,

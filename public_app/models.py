@@ -1,5 +1,8 @@
+import uuid
 from django.db import models
-from django.db.models.fields import CharField
+from django.db.models.deletion import CASCADE
+from djstripe.models import Customer, Subscription
+from django.contrib.auth.models import User, AbstractUser
 from django_pgschemas.models import TenantMixin, DomainMixin
 
 class Client(TenantMixin):
@@ -8,3 +11,4 @@ class Client(TenantMixin):
 
 class Domain(DomainMixin):
     pass
+
