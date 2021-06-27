@@ -51,7 +51,7 @@ def signup(request):
                     additional = Additional(user = user) 
                     additional.save()
                     redirect_url = create_tenant(data["tenant_name"], data["email"], data["password"])
-                    # send_signup_email(data["email"], data["tenant_name"])
+                    send_signup_email(data["email"], data["tenant_name"])
                     return redirect(redirect_url)
                 else:
                     errors.append(f"Only alphabet, numbers and _ allowed in tenant name.")
@@ -121,7 +121,7 @@ def see_item(request):
 #STRIPE WEBHOOKS
 @webhooks.handler("invoice.payment_succeeded")
 def charge_suceeded(event, **kwargs):
-    
+
     data = event.data["object"]
     email = data["customer_email"]
 
