@@ -23,8 +23,9 @@ Setting up project for development
 * You'll need to get PUBLIC_KEY and SECRET_KEY from stripe dashboard and use here.
 * Install `stripe cli` and use `stripe listen --forward-to localhost:8000/stripe/webhook/` to listen to webhooks which update database upon any change.
 
+3. Configure database settings in 71.
 
-### Setting up database
+### Migration and database sync
 1. python manage.py migrate -s public
 2. python manage.py migrate
 3. python manage.py createsuperuser (create superuser)
