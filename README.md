@@ -35,3 +35,8 @@ Setting up project for development
 Using project
 ------------------------
   (__Run development server__)
+1. Go to `/signup` to create a client
+2. Go to `/{client_name}/signin` to login to client.
+3. `/{client_name}/` is home which  checks for trial and subscription to enter.
+4. You can add subscriptions, update and cancel them from `/{client_name}/subscribe`.
+5. `/admin` is home app admin which has all the users and stripe data. 
