@@ -17,12 +17,19 @@ def home(request):
     tenant_name = request.tenant.schema_name
     if request.user.is_authenticated:
         if is_subscribed(request):
-            context = {"message": f"Welcome here "}
+            return redirect(f"/{tenant_name}/hello-world")
         else:
-            context = {"message": "Your trial is expired. Please subscribe"}
-        return render(request, "client_app/home.html", {"client": tenant_name, **context})
+            return redirect(f"/{tenant_name}/subscribe")
     else:
         return redirect(f"/{tenant_name}/login")
+
+def hello_world(request):
+    tenant_name = request.tenant.schema_name
+    if request.user.is_authenticated:
+        if is_subscribed(request):
+            return HttpResponse("Hello world! You're seeing this because you're either subscribed or have trial remaining.")
+    return redirect(f"/{tenant_name}/")
+
 
 def subscribe(request):
     tenant_name = request.tenant.schema_name

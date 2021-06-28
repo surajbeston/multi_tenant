@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'multi_tenant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django_pgschemas.postgresql_backend',
-        'NAME': 'multi_tenant1',
+        'NAME': '',
         'HOST': 'localhost',
         'PORT': '5432',
         'USER': 'postgres',

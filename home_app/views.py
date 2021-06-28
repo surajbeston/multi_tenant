@@ -74,8 +74,8 @@ def create_checkout_session(request):
         customer_email=data["email"],
         line_items=line_items,
         mode='subscription',
-        success_url=settings.HOSTNAME + f':8001/{ data["client"] }/',
-        cancel_url=settings.HOSTNAME + f':8001/{ data["client"] }/',
+        success_url=settings.HOSTNAME + f':8000/{ data["client"] }/',
+        cancel_url=settings.HOSTNAME + f':8000/{ data["client"] }/',
     )
     return JsonResponse({
         'id': checkout_session.id
