@@ -75,7 +75,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
         'USER': 'postgres',
-        'PASSWORD': 'rugby'
+        'PASSWORD': ''
     }
 }
 
@@ -151,8 +151,8 @@ AUTH_PASSWORD_VALIDATORS = [
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'getsurajjha@gmail.com'
-EMAIL_HOST_PASSWORD = 'Gharel0M@ya'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
@@ -187,9 +187,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "staticfiles")]
 
 #STRIPE CONFIGS
 
-STRIPE_TEST_PUBLIC_KEY = "pk_test_51J5GaNBqbJO97QQgMHpgpzRfAhlqUIo0FPs3rZGlHZBPArVA0DxdIDwIzRLKnqxs9xWkrSVMljUZaO2Tr0TFf7Pp00HnB0xSpR"
-STRIPE_TEST_SECRET_KEY = "sk_test_51J5GaNBqbJO97QQg6bKgGeSOf3QRAFesfK5d4yf9K51tahX1KJOUE4MWW4M1zBgOb9G7iGpQUEy8IehyknxXBvnd00ZM2f9c1N"
+STRIPE_TEST_PUBLIC_KEY = ""
+STRIPE_TEST_SECRET_KEY = ""
 STRIPE_LIVE_MODE = False
-DJSTRIPE_WEBHOOK_SECRET = "whsec_eWy198FZlzS9CcMotj477dwah0b27cU2"
+DJSTRIPE_WEBHOOK_SECRET = ""
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
